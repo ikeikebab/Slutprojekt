@@ -5,7 +5,7 @@ class Game:
     def __init__(self):
         
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH,HEIGTH))
+        self.screen = pygame.display.set_mode((WIDTH,HEIGHT))
         self.clock = pygame.time.Clock()
 
     def run (self):
