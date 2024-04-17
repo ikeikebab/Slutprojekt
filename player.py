@@ -1,4 +1,4 @@
-import random 
+import os
 import math 
 import pygame 
 from os import listdir
@@ -8,6 +8,7 @@ class Player(pygame.sprite.Sprite):
     color = (255, 0, 0)
 
     def __init__(self, x, y, width, height):
+        super().__init__()
         self.rect = pygame.Rect(x, y, width, height)
         self.x_vel = 0
         self.y_vel = 0
@@ -26,7 +27,7 @@ class Player(pygame.sprite.Sprite):
             self.animation_count = 0
 
     def move_right(self, vel):
-        self.y_vel = vel
+        self.x_vel = vel
         if self.direction != "right":
             self.direction = "right"
             self.animation_count = 0
