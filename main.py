@@ -3,7 +3,7 @@ import os
 import math
 from os import listdir
 from os.path import isfile, join
-from player import Player 
+
 pygame.init()
 
 pygame.display.set_caption("Platform Game")
@@ -13,6 +13,9 @@ FPS = 60
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
+
+from player import Player 
+from spriteutils import load_sprite_sheets
 
 def get_background(name):
     image = pygame.image.load(join("assets", "Background", name))
