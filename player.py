@@ -1,7 +1,6 @@
 import random 
 import math 
 import pygame 
-import main
 from os import listdir
 from os.path import isfile, join
 
