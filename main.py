@@ -3,6 +3,7 @@ import os
 import math
 from os import listdir
 from os.path import isfile, join
+from player import Player 
 pygame.init()
 
 pygame.display.set_caption("Platform Game")
