@@ -275,27 +275,65 @@ def handle_move(player, objects):
         if obj and obj.name == "fire":
             player.make_hit()
 
+def create_level(level_definition):
+    blocks = []
+    block_size = 96
+    for row_index, row in enumerate(level_definition):
+        for col_index, symbol in enumerate(row):
+            if symbol == "#":
+                x = col_index * block_size
+                y = row_index * block_size
+                block = Block(x, y, block_size)
+                blocks.append(block)
+    return blocks
+
+level_1_definition = [
+    "############",
+    "#          #",
+    "#          #",
+    "#          #",
+    "#          #",
+    "#          #",
+    "############"
+]
+
+level_2_definition = [
+    "############",
+    "#     ##   #",
+    "#    #  #  #",
+    "#   #    # #",
+    "#  #      ##",
+    "#          #",
+    "############"
+]
 
 def main(window):
     clock = pygame.time.Clock()
-    background, bg_image = get_background("Gray.png")
+    background, bg_image = get_background("Blue.png")
 
     block_size = 96
 
     player = Player(100, 100, 50, 50)
-    fire = Fire(435, HEIGHT - block_size - 64, 16, 32)
+    fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
-    floor = [Block(i * block_size, HEIGHT - block_size, block_size)
-             for i in range(-WIDTH // block_size, (WIDTH * 2) // block_size)]
-    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size),
-               Block(block_size * -1, HEIGHT - block_size * 2, block_size), fire]
 
     offset_x = 0
     scroll_area_width = 200
 
+    current_level = 1 
+
     run = True
     while run:
         clock.tick(FPS)
+
+    
+        if current_level == 1:
+            level_definition = level_1_definition
+        elif current_level == 2:
+            level_definition = level_2_definition
+       
+
+        blocks = create_level(level_definition)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -307,8 +345,8 @@ def main(window):
 
         player.loop(FPS)
         fire.loop()
-        handle_move(player, objects)
-        draw(window, background, bg_image, player, objects, offset_x)
+        handle_move(player, blocks)
+        draw(window, background, bg_image, player, blocks, offset_x)
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
