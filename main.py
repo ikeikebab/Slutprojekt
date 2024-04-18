@@ -293,7 +293,7 @@ def create_level(level_definition):
                 block = Block(x, y, block_size)
                 blocks.append(block)
             elif symbol == "F":
-                fire_positions.append((x + 35 , y + 16))  
+                fire_positions.append((x, y))  
 
     return blocks, fire_positions
 
@@ -303,8 +303,8 @@ level_1_definition = [
     "            ",
     "            ",
     "            ",
-    "   F        ",
-    "############"
+    "            ",
+    "###FFFFFF####"
 ]
 
 level_2_definition = [
@@ -319,7 +319,6 @@ level_2_definition = [
 ]
 
 def draw_menu(window, play_button_icon):
-
     window.fill((0, 0, 0))
     window.blit(play_button_icon, (WIDTH // 2 - 16, HEIGHT // 2 - 16))
     pygame.display.update()
@@ -336,7 +335,10 @@ def main_menu(window, play_button_icon):
                     mouse_pos = pygame.mouse.get_pos()
                     if (WIDTH // 2 - 16) <= mouse_pos[0] <= (WIDTH // 2 + 16) and \
                             (HEIGHT // 2 - 16) <= mouse_pos[1] <= (HEIGHT // 2 + 16):
-                        return LEVEL_SELECTION_SCREEN
+                        return GAME_SCREEN
+
+        pygame.display.update()
+
                     
 def level_selection(window):
     pass
@@ -358,66 +360,72 @@ def main(window):
 
     current_level = 1
 
-    play_button_icon = pygame.image.load(os.path.join("assets","Menu", "Buttons", "Play.png")).convert_alpha()
+    play_button_icon = pygame.image.load(os.path.join("assets", "Menu", "Buttons", "Play.png")).convert_alpha()
 
-    run = True
-    while run:
+    current_screen = START_SCREEN
+    run_game = True
+    while run_game:
         clock.tick(FPS)
-
-        if current_level == 1:
-            level_definition = level_1_definition
-        elif current_level == 2:
-            level_definition = level_2_definition
-
-        blocks, fire_positions = create_level(level_definition)
-
-        fires = []
-
-        for fire_position in fire_positions:
-            fire = Fire(fire_position[0], fire_position[1] + 15, 16, 32)
-            fire.on()
-            fires.append(fire)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                run_game = False
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and player.jump_count < 2:
-                    player.jump()
+        if current_screen == START_SCREEN:
+            current_screen = main_menu(window, play_button_icon)
+        elif current_screen == LEVEL_SELECTION_SCREEN:
+            current_screen = level_selection(window)
+        elif current_screen == GAME_SCREEN:
+            run = True
+            while run:
+                clock.tick(FPS)
 
-        player.loop(FPS)
-        handle_move(player, blocks)
+                if current_level == 1:
+                    level_definition = level_1_definition
+                elif current_level == 2:
+                    level_definition = level_2_definition
 
-        for fire in fires:
-            fire.loop()
+                blocks, fire_positions = create_level(level_definition)
 
-        for fire in fires:
-            if pygame.sprite.collide_mask(player, fire):
-                player.make_hit()
+                fires = []
 
-        draw(window, background, bg_image, player, blocks, offset_x)
+                for fire_position in fire_positions:
+                    fire = Fire(fire_position[0], fire_position[1] + 15, 16, 32)
+                    fire.on()
+                    fires.append(fire)
 
-        for fire in fires:
-            fire.draw(window, offset_x)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        run = False
+                        run_game = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE and player.jump_count < 2:
+                            player.jump()
 
-        if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
-                (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
-            offset_x += player.x_vel
+                player.loop(FPS)
+                handle_move(player, blocks)
 
-        current_screen = START_SCREEN
-        while True:
-            if current_screen == START_SCREEN:
-                current_screen = main_menu(window, play_button_icon)
-            elif current_screen == LEVEL_SELECTION_SCREEN:
-                current_screen = level_selection(window)
-            elif current_screen == GAME_SCREEN:
-                game(window)
+                for fire in fires:
+                    fire.loop()
 
-            clock.tick(FPS)
+                for fire in fires:
+                    if pygame.sprite.collide_mask(player, fire):
+                        player.make_hit()
+
+                draw(window, background, bg_image, player, blocks, offset_x)
+
+                for fire in fires:
+                    fire.draw(window, offset_x)
+
+                if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
+                        (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
+                    offset_x += player.x_vel
 
     pygame.quit()
     quit()
+
+if __name__ == "__main__":
+    main(window)
 
 
 if __name__ == "__main__":
