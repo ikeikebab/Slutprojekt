@@ -473,7 +473,7 @@ def main(window):
                     fire.loop()
 
                 for fire in fires:
-                    if pygame.sprite.collide_mask(player, fire):
+                    if pygame.sprite.collide_mask(player, fire): # type: ignore
                         player.make_hit()
 
                 draw(window, background, bg_image, player, blocks, offset_x)
@@ -493,7 +493,7 @@ def main(window):
                 if restart:
                     restart_level(player)
                     game_state = "playing"
-                    restart = False  it
+                    restart = False 
                 else:
                     run_game = False
 
