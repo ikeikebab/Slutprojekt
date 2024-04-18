@@ -9,7 +9,7 @@ pygame.init()
 pygame.display.set_caption("Frog Jumper")
 
 WIDTH, HEIGHT = 1280, 720
-FPS = 30
+FPS = 60
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -280,7 +280,7 @@ def handle_move(player, objects):
 def create_level(level_definition):
     blocks = []
     block_size = 96
-    fire_position = None
+    fire_positions = []  
 
     for row_index, row in enumerate(level_definition):
         for col_index, symbol in enumerate(row):
@@ -290,9 +290,10 @@ def create_level(level_definition):
                 block = Block(x, y, block_size)
                 blocks.append(block)
             elif symbol == "F":
-                fire_position = (x, y +35)  
+                fire_positions.append((x + 35 , y + 16))  
 
-    return blocks, fire_position
+    return blocks, fire_positions
+
 
 level_1_definition = [
     "            ",
@@ -305,13 +306,14 @@ level_1_definition = [
 ]
 
 level_2_definition = [
-    "############",
-    "#     ##   #",
-    "#    #  #  #",
-    "#   #    # #",
-    "#  #      ##",
-    "#  F       #",
-    "############"
+    "            ",
+    "            ",
+    "            ",
+    "            ",
+    "            ",
+    "     ##     ",
+    "###FFFFFF###",
+    "  ########   "
 ]
 
 def main(window):
@@ -325,7 +327,7 @@ def main(window):
     offset_x = 0
     scroll_area_width = 200
 
-    current_level = 1
+    current_level = 2
 
     run = True
     while run:
@@ -336,7 +338,14 @@ def main(window):
         elif current_level == 2:
             level_definition = level_2_definition
 
-        blocks, fire_position = create_level(level_definition)
+        blocks, fire_positions = create_level(level_definition)
+
+        fires = []
+
+        for fire_position in fire_positions:
+            fire = Fire(fire_position[0], fire_position[1] + 15, 16, 32)
+            fire.on()
+            fires.append(fire)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -349,24 +358,26 @@ def main(window):
         player.loop(FPS)
         handle_move(player, blocks)
 
-        if fire_position is not None:
-            fire = Fire(*fire_position, 16, 32)
-            fire.on()
-            fire.loop()  
-            draw(window, background, bg_image, player, blocks + [fire], offset_x)
-        else:
-            draw(window, background, bg_image, player, blocks, offset_x)
+        for fire in fires:
+            fire.loop()  # Update fire animation
 
-        if fire_position is not None and pygame.sprite.collide_mask(player, fire): # type: ignore
-            player.make_hit()
+        for fire in fires:
+            if pygame.sprite.collide_mask(player, fire):
+                player.make_hit()
+
+        draw(window, background, bg_image, player, blocks, offset_x)  # Draw player and blocks first
+
+        for fire in fires:
+            fire.draw(window, offset_x)  # Draw fire on top of player and blocks
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
             offset_x += player.x_vel
 
+        pygame.display.update()
+
     pygame.quit()
     quit()
-
 
 if __name__ == "__main__":
     main(window)
