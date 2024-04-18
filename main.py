@@ -11,6 +11,10 @@ pygame.display.set_caption("Frog Jumper")
 WIDTH, HEIGHT = 1280, 720
 FPS = 60
 PLAYER_VEL = 5
+START_SCREEN = 0
+LEVEL_SELECTION_SCREEN = 1
+GAME_SCREEN = 2
+
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -293,7 +297,6 @@ def create_level(level_definition):
 
     return blocks, fire_positions
 
-
 level_1_definition = [
     "            ",
     "            ",
@@ -315,6 +318,33 @@ level_2_definition = [
     "  ########   "
 ]
 
+def draw_menu(window, play_button_icon):
+
+    window.fill((0, 0, 0))
+    window.blit(play_button_icon, (WIDTH // 2 - 16, HEIGHT // 2 - 16))
+    pygame.display.update()
+
+def main_menu(window, play_button_icon):
+    draw_menu(window, play_button_icon)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if (WIDTH // 2 - 16) <= mouse_pos[0] <= (WIDTH // 2 + 16) and \
+                            (HEIGHT // 2 - 16) <= mouse_pos[1] <= (HEIGHT // 2 + 16):
+                        return LEVEL_SELECTION_SCREEN
+                    
+def level_selection(window):
+    pass
+
+def game(window):
+    pass
+
+
 def main(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("Gray.png")
@@ -326,7 +356,9 @@ def main(window):
     offset_x = 0
     scroll_area_width = 200
 
-    current_level = 2
+    current_level = 1
+
+    play_button_icon = pygame.image.load(os.path.join("assets","Menu", "Buttons", "Play.png")).convert_alpha()
 
     run = True
     while run:
@@ -358,25 +390,38 @@ def main(window):
         handle_move(player, blocks)
 
         for fire in fires:
-            fire.loop()  # 
+            fire.loop()
 
         for fire in fires:
-            if pygame.sprite.collide_mask(player, fire): # type: ignore
+            if pygame.sprite.collide_mask(player, fire):
                 player.make_hit()
 
-        draw(window, background, bg_image, player, blocks, offset_x) 
+        draw(window, background, bg_image, player, blocks, offset_x)
 
         for fire in fires:
-            fire.draw(window, offset_x)  
+            fire.draw(window, offset_x)
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
             offset_x += player.x_vel
 
-        pygame.display.update()
+        current_screen = START_SCREEN
+        while True:
+            if current_screen == START_SCREEN:
+                current_screen = main_menu(window, play_button_icon)
+            elif current_screen == LEVEL_SELECTION_SCREEN:
+                current_screen = level_selection(window)
+            elif current_screen == GAME_SCREEN:
+                game(window)
+
+            clock.tick(FPS)
 
     pygame.quit()
     quit()
+
+
+if __name__ == "__main__":
+    main(window)
 
 if __name__ == "__main__":
     main(window)
