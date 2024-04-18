@@ -352,16 +352,14 @@ def main(window):
         if fire_position is not None:
             fire = Fire(*fire_position, 16, 32)
             fire.on()
-            fire.loop()  # Call the loop method to update fire animation
+            fire.loop()  
             draw(window, background, bg_image, player, blocks + [fire], offset_x)
         else:
             draw(window, background, bg_image, player, blocks, offset_x)
 
-        # Check collision with fire
-        if fire_position is not None and pygame.sprite.collide_mask(player, fire):
+        if fire_position is not None and pygame.sprite.collide_mask(player, fire): # type: ignore
             player.make_hit()
 
-        # Update offset if player reaches scroll area
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
             offset_x += player.x_vel
