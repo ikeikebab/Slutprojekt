@@ -323,6 +323,24 @@ def draw_menu(window, play_button_icon):
     window.blit(play_button_icon, (WIDTH // 2 - 16, HEIGHT // 2 - 16))
     pygame.display.update()
 
+def draw_level_selection(window):
+    # Draw level selection options
+    # For example:
+    # Level 1 button
+    level1_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+    pygame.draw.rect(window, (255, 255, 255), level1_button_rect)
+    font = pygame.font.Font(None, 36)
+    text = font.render("Level 1", True, (0, 0, 0))
+    window.blit(text, (WIDTH // 2 - 50, HEIGHT // 2 - 40))
+
+    # Level 2 button
+    level2_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 50, 200, 50)
+    pygame.draw.rect(window, (255, 255, 255), level2_button_rect)
+    text = font.render("Level 2", True, (0, 0, 0))
+    window.blit(text, (WIDTH // 2 - 50, HEIGHT // 2 + 60))
+
+    pygame.display.update()
+
 def main_menu(window, play_button_icon):
     draw_menu(window, play_button_icon)
     while True:
@@ -335,13 +353,30 @@ def main_menu(window, play_button_icon):
                     mouse_pos = pygame.mouse.get_pos()
                     if (WIDTH // 2 - 16) <= mouse_pos[0] <= (WIDTH // 2 + 16) and \
                             (HEIGHT // 2 - 16) <= mouse_pos[1] <= (HEIGHT // 2 + 16):
-                        return GAME_SCREEN
+                        # Display level selection
+                        draw_level_selection(window)
+                        return LEVEL_SELECTION_SCREEN
+
+        pygame.display.update()
+                    
+def level_selection(window):
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
+                            (HEIGHT // 2 - 50) <= mouse_pos[1] <= (HEIGHT // 2 + 0):
+                        return GAME_SCREEN, level_1_definition
+                    elif (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
+                            (HEIGHT // 2 + 50) <= mouse_pos[1] <= (HEIGHT // 2 + 100):
+                        return GAME_SCREEN, level_2_definition
 
         pygame.display.update()
 
-                    
-def level_selection(window):
-    pass
 
 def game(window):
     pass
@@ -358,8 +393,6 @@ def main(window):
     offset_x = 0
     scroll_area_width = 200
 
-    current_level = 1
-
     play_button_icon = pygame.image.load(os.path.join("assets", "Menu", "Buttons", "Play.png")).convert_alpha()
 
     current_screen = START_SCREEN
@@ -374,16 +407,13 @@ def main(window):
         if current_screen == START_SCREEN:
             current_screen = main_menu(window, play_button_icon)
         elif current_screen == LEVEL_SELECTION_SCREEN:
-            current_screen = level_selection(window)
+            current_screen, level_definition = level_selection(window)
+            blocks, fire_positions = create_level(level_definition)
+            current_level = 1 if level_definition == level_1_definition else 2
         elif current_screen == GAME_SCREEN:
             run = True
             while run:
                 clock.tick(FPS)
-
-                if current_level == 1:
-                    level_definition = level_1_definition
-                elif current_level == 2:
-                    level_definition = level_2_definition
 
                 blocks, fire_positions = create_level(level_definition)
 
@@ -424,12 +454,7 @@ def main(window):
     pygame.quit()
     quit()
 
-if __name__ == "__main__":
-    main(window)
 
-
-if __name__ == "__main__":
-    main(window)
 
 if __name__ == "__main__":
     main(window)
