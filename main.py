@@ -214,14 +214,15 @@ def get_background(name):
     return tiles, image
 
 
-def draw(window, background, bg_image, player, objects, offset_x):
+def draw(window, background, bg_image, player, blocks, offset_x):
+    visible_blocks = [block for block in blocks if block.rect.colliderect(window.get_rect().move(offset_x, 0))]
+    visible_sprites = [player] + visible_blocks
+    
     for tile in background:
         window.blit(bg_image, tile)
-
-    for obj in objects:
-        obj.draw(window, offset_x)
-
-    player.draw(window, offset_x)
+        
+    for sprite in visible_sprites:
+        sprite.draw(window, offset_x)
 
     pygame.display.update()
 
