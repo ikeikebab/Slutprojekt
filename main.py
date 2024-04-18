@@ -8,8 +8,8 @@ pygame.init()
 
 pygame.display.set_caption("Frog Jumper")
 
-WIDTH, HEIGHT = 1000, 800
-FPS = 60
+WIDTH, HEIGHT = 1280, 720
+FPS = 30
 PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -46,7 +46,7 @@ def load_sprite_sheets(dir1, dir2, width, height, direction=False):
 
 def get_block(size):
     path = join("assets", "Terrain", "Terrain.png")
-    image = pygame.image.load(path).convert_alpha()
+    image = pygame.image.load(path).convert()
     surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
     rect = pygame.Rect(96, 0, size, size)
     surface.blit(image, (0, 0), rect)
@@ -202,7 +202,7 @@ class Fire(Object):
 
 
 def get_background(name):
-    image = pygame.image.load(join("assets", "Background", name))
+    image = pygame.image.load(join("assets", "Background", name)).convert()
     _, _, width, height = image.get_rect()
     tiles = []
 
@@ -273,7 +273,9 @@ def handle_move(player, objects):
 
     for obj in to_check:
         if obj and obj.name == "fire":
-            player.make_hit()
+            if pygame.sprite.collide_mask(player, obj):
+                player.make_hit()
+
 
 def create_level(level_definition):
     blocks = []
@@ -288,17 +290,17 @@ def create_level(level_definition):
                 block = Block(x, y, block_size)
                 blocks.append(block)
             elif symbol == "F":
-                fire_position = (x, y)  # Record fire position
+                fire_position = (x, y)  
 
     return blocks, fire_position
 
 level_1_definition = [
-    "############",
-    "#          #",
-    "#          #",
-    "#          #",
-    "#          #",
-    "#  F       #",
+    "            ",
+    "            ",
+    "            ",
+    "            ",
+    "            ",
+    "   F        ",
     "############"
 ]
 
@@ -308,13 +310,13 @@ level_2_definition = [
     "#    #  #  #",
     "#   #    # #",
     "#  #      ##",
-    "#          #",
+    "#  F       #",
     "############"
 ]
 
 def main(window):
     clock = pygame.time.Clock()
-    background, bg_image = get_background("Blue.png")
+    background, bg_image = get_background("Gray.png")
 
     block_size = 96
 
@@ -323,7 +325,7 @@ def main(window):
     offset_x = 0
     scroll_area_width = 200
 
-    current_level = 1 
+    current_level = 1
 
     run = True
     while run:
@@ -350,11 +352,16 @@ def main(window):
         if fire_position is not None:
             fire = Fire(*fire_position, 16, 32)
             fire.on()
-            fire.loop()
+            fire.loop()  # Call the loop method to update fire animation
             draw(window, background, bg_image, player, blocks + [fire], offset_x)
         else:
             draw(window, background, bg_image, player, blocks, offset_x)
 
+        # Check collision with fire
+        if fire_position is not None and pygame.sprite.collide_mask(player, fire):
+            player.make_hit()
+
+        # Update offset if player reaches scroll area
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
             offset_x += player.x_vel
