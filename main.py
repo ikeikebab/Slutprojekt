@@ -214,15 +214,14 @@ def get_background(name):
     return tiles, image
 
 
-def draw(window, background, bg_image, player, blocks, offset_x):
-    visible_blocks = [block for block in blocks if block.rect.colliderect(window.get_rect().move(offset_x, 0))]
-    visible_sprites = [player] + visible_blocks
-    
+def draw(window, background, bg_image, player, objects, offset_x):
     for tile in background:
         window.blit(bg_image, tile)
 
-    for sprite in visible_sprites:
-        sprite.draw(window, offset_x)
+    for obj in objects:
+        obj.draw(window, offset_x)
+
+    player.draw(window, offset_x)
 
     pygame.display.update()
 
@@ -257,37 +256,41 @@ def collide(player, objects, dx):
     return collided_object
 
 
-def handle_move(player, blocks):
+def handle_move(player, objects):
     keys = pygame.key.get_pressed()
 
     player.x_vel = 0
-    collide_left = any(player.rect.colliderect(block.rect.move(-PLAYER_VEL * 2, 0)) for block in blocks)
-    collide_right = any(player.rect.colliderect(block.rect.move(PLAYER_VEL * 2, 0)) for block in blocks)
+    collide_left = collide(player, objects, -PLAYER_VEL * 2)
+    collide_right = collide(player, objects, PLAYER_VEL * 2)
 
     if keys[pygame.K_a] and not collide_left:
         player.move_left(PLAYER_VEL)
     if keys[pygame.K_d] and not collide_right:
         player.move_right(PLAYER_VEL)
 
-    vertical_collide = any(player.rect.colliderect(block.rect.move(0, player.y_vel)) for block in blocks)
-    if vertical_collide:
-        player.landed()
-    else:
-        player.loop(FPS)
+    vertical_collide = handle_vertical_collision(player, objects, player.y_vel)
+    to_check = [collide_left, collide_right, *vertical_collide]
 
-    player.loop(FPS)
+    for obj in to_check:
+        if obj and obj.name == "fire":
+            player.make_hit()
 
 def create_level(level_definition):
     blocks = []
     block_size = 96
+    fire_position = None
+
     for row_index, row in enumerate(level_definition):
         for col_index, symbol in enumerate(row):
+            x = col_index * block_size
+            y = row_index * block_size
             if symbol == "#":
-                x = col_index * block_size
-                y = row_index * block_size
                 block = Block(x, y, block_size)
                 blocks.append(block)
-    return blocks
+            elif symbol == "F":
+                fire_position = (x, y)  # Record fire position
+
+    return blocks, fire_position
 
 level_1_definition = [
     "############",
@@ -295,7 +298,7 @@ level_1_definition = [
     "#          #",
     "#          #",
     "#          #",
-    "#          #",
+    "#  F       #",
     "############"
 ]
 
@@ -316,8 +319,6 @@ def main(window):
     block_size = 96
 
     player = Player(100, 100, 50, 50)
-    fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
-    fire.on()
 
     offset_x = 0
     scroll_area_width = 200
@@ -328,14 +329,12 @@ def main(window):
     while run:
         clock.tick(FPS)
 
-    
         if current_level == 1:
             level_definition = level_1_definition
         elif current_level == 2:
             level_definition = level_2_definition
-       
 
-        blocks = create_level(level_definition)
+        blocks, fire_position = create_level(level_definition)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -346,9 +345,15 @@ def main(window):
                     player.jump()
 
         player.loop(FPS)
-        fire.loop()
         handle_move(player, blocks)
-        draw(window, background, bg_image, player, blocks, offset_x)
+
+        if fire_position is not None:
+            fire = Fire(*fire_position, 16, 32)
+            fire.on()
+            fire.loop()
+            draw(window, background, bg_image, player, blocks + [fire], offset_x)
+        else:
+            draw(window, background, bg_image, player, blocks, offset_x)
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
