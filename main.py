@@ -220,7 +220,7 @@ def draw(window, background, bg_image, player, blocks, offset_x):
     
     for tile in background:
         window.blit(bg_image, tile)
-        
+
     for sprite in visible_sprites:
         sprite.draw(window, offset_x)
 
@@ -257,24 +257,25 @@ def collide(player, objects, dx):
     return collided_object
 
 
-def handle_move(player, objects):
+def handle_move(player, blocks):
     keys = pygame.key.get_pressed()
 
     player.x_vel = 0
-    collide_left = collide(player, objects, -PLAYER_VEL * 2)
-    collide_right = collide(player, objects, PLAYER_VEL * 2)
+    collide_left = any(player.rect.colliderect(block.rect.move(-PLAYER_VEL * 2, 0)) for block in blocks)
+    collide_right = any(player.rect.colliderect(block.rect.move(PLAYER_VEL * 2, 0)) for block in blocks)
 
     if keys[pygame.K_a] and not collide_left:
         player.move_left(PLAYER_VEL)
     if keys[pygame.K_d] and not collide_right:
         player.move_right(PLAYER_VEL)
 
-    vertical_collide = handle_vertical_collision(player, objects, player.y_vel)
-    to_check = [collide_left, collide_right, *vertical_collide]
+    vertical_collide = any(player.rect.colliderect(block.rect.move(0, player.y_vel)) for block in blocks)
+    if vertical_collide:
+        player.landed()
+    else:
+        player.loop(FPS)
 
-    for obj in to_check:
-        if obj and obj.name == "fire":
-            player.make_hit()
+    player.loop(FPS)
 
 def create_level(level_definition):
     blocks = []
