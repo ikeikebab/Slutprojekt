@@ -290,7 +290,7 @@ def create_level(level_definition):
                 block = Block(x, y, block_size)
                 blocks.append(block)
             elif symbol == "F":
-                fire_position = (x, y)  
+                fire_position = (x, y +35)  
 
     return blocks, fire_position
 
