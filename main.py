@@ -180,7 +180,7 @@ class Fire(Object):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height, "fire")
         self.fire = load_sprite_sheets("Traps", "Fire", width, height)
-        self.image = self.fire["off"][0]
+        self.image = self.fire["on"][0]
         self.mask = pygame.mask.from_surface(self.image)
         self.animation_count = 0
         self.animation_name = "off"
@@ -298,13 +298,14 @@ def create_level(level_definition):
     return blocks, fire_positions
 
 level_1_definition = [
-    "            ",
-    "            ",
-    "            ",
-    "            ",
-    "            ",
-    "            ",
-    "###FFFFFF####"
+    "             ",
+    "             ",
+    "             ",
+    "             ",
+    "             ",
+    "             ",
+    "###FFFFFF####",
+    "  ########   "
 ]
 
 level_2_definition = [
@@ -324,16 +325,12 @@ def draw_menu(window, play_button_icon):
     pygame.display.update()
 
 def draw_level_selection(window):
-    # Draw level selection options
-    # For example:
-    # Level 1 button
     level1_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
     pygame.draw.rect(window, (255, 255, 255), level1_button_rect)
     font = pygame.font.Font(None, 36)
     text = font.render("Level 1", True, (0, 0, 0))
     window.blit(text, (WIDTH // 2 - 50, HEIGHT // 2 - 40))
 
-    # Level 2 button
     level2_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 50, 200, 50)
     pygame.draw.rect(window, (255, 255, 255), level2_button_rect)
     text = font.render("Level 2", True, (0, 0, 0))
@@ -353,7 +350,6 @@ def main_menu(window, play_button_icon):
                     mouse_pos = pygame.mouse.get_pos()
                     if (WIDTH // 2 - 16) <= mouse_pos[0] <= (WIDTH // 2 + 16) and \
                             (HEIGHT // 2 - 16) <= mouse_pos[1] <= (HEIGHT // 2 + 16):
-                        # Display level selection
                         draw_level_selection(window)
                         return LEVEL_SELECTION_SCREEN
 
@@ -381,6 +377,42 @@ def level_selection(window):
 def game(window):
     pass
 
+def game_over_screen(window):
+    font = pygame.font.Font(None, 36)
+    game_over_text = font.render("Game Over", True, (255, 0, 0))
+    restart_text = font.render("Restart", True, (255, 255, 255))
+    game_over_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    restart_rect = restart_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
+
+    window.fill((0, 0, 0))
+    window.blit(game_over_text, game_over_rect)
+    pygame.draw.rect(window, (0, 128, 0), restart_rect)
+    window.blit(restart_text, restart_rect)
+
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if restart_rect.collidepoint(mouse_pos):
+                        return True
+        pygame.display.update()
+
+def restart_level(player):
+    player.rect.x = 100
+    player.rect.y = 100
+    player.x_vel = 0
+    player.y_vel = 0
+    player.hit = False
+    player.hit_count = 0
+    player.animation_count = 0
+    player.jump_count = 0
+    player.fall_count = 0
 
 def main(window):
     clock = pygame.time.Clock()
@@ -396,7 +428,9 @@ def main(window):
     play_button_icon = pygame.image.load(os.path.join("assets", "Menu", "Buttons", "Play.png")).convert_alpha()
 
     current_screen = START_SCREEN
-    run_game = True
+    run_game = True  
+    game_state = "playing"
+    restart = False 
     while run_game:
         clock.tick(FPS)
 
@@ -450,6 +484,18 @@ def main(window):
                 if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                         (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
                     offset_x += player.x_vel
+                
+                if player.rect.bottom > HEIGHT or player.hit:
+                    game_state = "game_over"
+
+                if game_state == "game_over":
+                    restart = game_over_screen(window)
+                if restart:
+                    restart_level(player)
+                    game_state = "playing"
+                    restart = False  it
+                else:
+                    run_game = False
 
     pygame.quit()
     quit()
