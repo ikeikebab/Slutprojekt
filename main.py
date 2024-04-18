@@ -454,7 +454,5 @@ def main(window):
     pygame.quit()
     quit()
 
-
-
 if __name__ == "__main__":
     main(window)
