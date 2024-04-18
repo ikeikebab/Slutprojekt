@@ -359,16 +359,16 @@ def main(window):
         handle_move(player, blocks)
 
         for fire in fires:
-            fire.loop()  # Update fire animation
+            fire.loop()  # 
 
         for fire in fires:
-            if pygame.sprite.collide_mask(player, fire):
+            if pygame.sprite.collide_mask(player, fire): # type: ignore
                 player.make_hit()
 
-        draw(window, background, bg_image, player, blocks, offset_x)  # Draw player and blocks first
+        draw(window, background, bg_image, player, blocks, offset_x) 
 
         for fire in fires:
-            fire.draw(window, offset_x)  # Draw fire on top of player and blocks
+            fire.draw(window, offset_x)  
 
         if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                 (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
