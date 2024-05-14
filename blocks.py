@@ -1,6 +1,6 @@
-
 import pygame
 from graphics_manager import GraphicsManager
+from player import Player
 from os.path import join
 from os import listdir
 from os.path import isfile
@@ -16,7 +16,6 @@ class Object(pygame.sprite.Sprite):
 
     def draw(self, win, offset_x):
         win.blit(self.image, (self.rect.x - offset_x, self.rect.y))
-
 
 class ObjectManager:
     @staticmethod
@@ -54,10 +53,10 @@ class ObjectManager:
         return all_sprites
 
     @staticmethod
-    def create_block(x, y, size):
-        block = Object(x, y, size, size)
+    def create_block(x, y, size, player_instance):
+        block = Object(x, y, size, size, "block")
         block.image.blit(ObjectManager.get_block(size), (0, 0))
-        block.mask = pygame.mask.from_surface(block.image)
+        block.mask = player_instance.mask  # Assigning Player's mask to the block's mask
         return block
 
     @staticmethod
@@ -65,8 +64,5 @@ class ObjectManager:
         fire = Object(x, y, width, height, "fire")
         fire_sprites = ObjectManager.load_sprite_sheets("Traps", "Fire", width, height)
         fire.image = fire_sprites["on"][0]
-        fire.mask = pygame.mask.from_surface(fire.image)
-        fire.animation_count = 0
-        fire.animation_name = "off"
+        fire.mask = pygame.mask.from_surface(fire.image)  # Fixing the typo here
         return fire
-

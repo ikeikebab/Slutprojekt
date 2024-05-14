@@ -1,4 +1,5 @@
 import pygame
+from player import Player
 from blocks import ObjectManager
 
 class GameManager:
@@ -7,7 +8,7 @@ class GameManager:
         self.width = width
         self.height = height
         self.fps = fps
-        self.current_screen = 0
+        self.current_screen = START_SCREEN
         self.play_button_icon = pygame.image.load("assets/Menu/Buttons/Play.png").convert_alpha()
 
     def main(self):
@@ -15,12 +16,12 @@ class GameManager:
         clock = pygame.time.Clock()
 
         while True:
-            if self.current_screen == 0:
+            if self.current_screen == START_SCREEN:
                 self.current_screen = self.main_menu()
-            elif self.current_screen == 1:
-                self.current_screen, level_definition = self.level_selection()
-                blocks, fire_positions = ObjectManager.create_block(level_definition, self.width, self.height)
-            elif self.current_screen == 2:
+            elif self.current_screen == LEVEL_SELECTION_SCREEN:
+                self.current_screen, level_definition, player = self.level_selection()
+                blocks, fire_positions = ObjectManager.create_block(level_definition, self.width, self.height, player)
+            elif self.current_screen == GAME_SCREEN:
                 self.game(blocks, fire_positions)
 
             clock.tick(self.fps)
@@ -71,20 +72,35 @@ class GameManager:
     def level_selection(self):
         self.draw_level_selection()
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if pygame.mouse.get_pressed()[0]:
-                        mouse_pos = pygame.mouse.get_pos()
-                        if (self.width // 2 - 100) <= mouse_pos[0] <= (self.width // 2 + 100):
-                            if (self.height // 2) <= mouse_pos[1] <= (self.height // 2 + 50):
-                                return GAME_SCREEN, level_1_definition
-                            elif (self.height // 2 + 100) <= mouse_pos[1] <= (self.height // 2 + 150):
-                                return GAME_SCREEN, level_2_definition
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        quit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if pygame.mouse.get_pressed()[0]:
+                            mouse_pos = pygame.mouse.get_pos()
+                            if (self.width // 2 - 100) <= mouse_pos[0] <= (self.width // 2 + 100):
+                                if (self.height // 2) <= mouse_pos[1] <= (self.height // 2 + 50):
+                                    x = 100  # Example value, adjust as needed
+                                    y = 100  # Example value, adjust as needed
+                                    width = 32  # Example value, adjust as needed
+                                    height = 32  # Example value, adjust as needed
+                                    player = Player(x, y, width, height)
+                            return GAME_SCREEN, level_1_definition, player
+                        elif (self.height // 2 + 100) <= mouse_pos[1] <= (self.height // 2 + 150):
+                            # Define player initial position and size
+                            x = 100  # Example value, adjust as needed
+                            y = 100  # Example value, adjust as needed
+                            width = 32  # Example value, adjust as needed
+                            height = 32  # Example value, adjust as needed
+                            player = Player(x, y, width, height)
+                            return GAME_SCREEN, level_2_definition, player
 
-            pygame.display.update()
+        pygame.display.update()
+
+
+
+
 
     def game(self, blocks, fire_positions):
         # Your game logic here
