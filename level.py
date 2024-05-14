@@ -8,6 +8,8 @@ class LevelManager:
 
     def add_level(self, level_name, level_definition):
         self.levels[level_name] = level_definition
+        print(f"Added level '{level_name}': {level_definition}")
+
 
     def import_level_definitions(self, filename):
         with open(filename, 'r') as file:

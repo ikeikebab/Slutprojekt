@@ -52,6 +52,7 @@ class UIManager:
 
             pygame.display.update()
 
+
     @staticmethod
     def level_selection(window):
         while True:
@@ -64,10 +65,11 @@ class UIManager:
                         mouse_pos = pygame.mouse.get_pos()
                         if (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 - 50) <= mouse_pos[1] <= (HEIGHT // 2 + 0):
-                            return GAME_SCREEN, UIManager.level_manager.create_level("level_1")  # Pass level definition
+                            return GAME_SCREEN, "level_1"  # Pass level definition for level 1
                         elif (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 + 50) <= mouse_pos[1] <= (HEIGHT // 2 + 100):
-                            return GAME_SCREEN, UIManager.level_manager.create_level("level_2")  # Pass level definition
+                            return GAME_SCREEN, "level_2"  # Pass level definition for level 2
+
 
             pygame.display.update()
 

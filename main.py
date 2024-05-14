@@ -64,15 +64,18 @@ def main(window):
         if current_screen == START_SCREEN:
             current_screen = UIManager.main_menu(window, play_button_icon)
         elif current_screen == LEVEL_SELECTION_SCREEN:
-            current_screen, level_definition = UIManager.level_selection(window)
-            blocks = level_manager.create_level("level_1")  # Provide level_name
-            current_level = 1 if level_definition == level_manager.levels["level_1"] else 2
+            current_screen, selected_level = UIManager.level_selection(window)
+            print(f"Selected level: {selected_level}")
+            blocks = level_manager.create_level(selected_level)
+            current_level = 1 if selected_level == "level_1" else 2
+
+
         elif current_screen == GAME_SCREEN:
             run = True
             while run:
                 clock.tick(FPS)
 
-                blocks = level_manager.create_level("level_1")  # Provide level_name
+                blocks = level_manager.create_level(selected_level)  # Provide level_name
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
