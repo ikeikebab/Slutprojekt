@@ -20,6 +20,10 @@ class Fire(Obstacle):
         self.mask = pygame.mask.from_surface(self.image)
         self.animation_count = 0
         self.animation_name = "off"
+        # Set initial position based on input x and y
+        self.rect.x = x
+        self.rect.y = y
+
 
     def on(self):
         self.animation_name = "on"

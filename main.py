@@ -9,8 +9,7 @@ from blocks import Fire, Block
 
 pygame.init()
 WIDTH, HEIGHT = 1280, 720
-FPS = 60
-PLAYER_VEL = 5
+FPS = 120
 START_SCREEN = 0
 LEVEL_SELECTION_SCREEN = 1
 GAME_SCREEN = 2

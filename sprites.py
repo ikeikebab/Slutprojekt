@@ -22,9 +22,16 @@ class Player(pygame.sprite.Sprite):
         self.jump_count = 0
         self.hit = False
         self.hit_count = 0
+        self.max_fall_speed = 10
+
+    def apply_gravity(self):
+        # Apply gravity only if not already at maximum falling speed
+        if self.y_vel < self.max_fall_speed:
+            self.y_vel += self.GRAVITY
+
 
     def jump(self):
-        self.y_vel = -self.GRAVITY * 8
+        self.y_vel = -self.GRAVITY * 12
         self.animation_count = 0
         self.jump_count += 1
         if self.jump_count == 1:
@@ -66,6 +73,13 @@ class Player(pygame.sprite.Sprite):
         self.fall_count = 0
         self.y_vel = 0
         self.jump_count = 0
+    
+    def is_landed(self, objects):
+        # Check if player is landed on any objects
+        for obj in objects:
+            if pygame.sprite.collide_rect(self, obj) and self.rect.bottom == obj.rect.top:
+                return True
+        return False
 
     def hit_head(self):
         self.count = 0

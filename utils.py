@@ -36,6 +36,12 @@ class Utility:
 
         return all_sprites
     
+    @staticmethod
+    def get_background(name):
+        image = pygame.image.load(join("assets", "Background", name)).convert()
+        _, _, width, height = image.get_rect()
+    tiles = []
+    
 
     @staticmethod
     def get_block(size):
@@ -49,18 +55,22 @@ class Utility:
     @staticmethod
     def handle_vertical_collision(player, objects, dy):
         collided_objects = []
-        for obj in objects:
-            if pygame.sprite.collide_mask(player, obj):
-                if dy > 0:
-                    player.rect.bottom = obj.rect.top
-                    player.landed()
-                elif dy < 0:
-                    player.rect.top = obj.rect.bottom
-                    player.hit_head()
 
-                collided_objects.append(obj)
+        if dy > 0:  # If moving down
+            for obj in objects:
+                if pygame.sprite.collide_rect(player, obj):
+                    player.rect.bottom = obj.rect.top  # Adjust player's position
+                    player.landed()  # Reset jump count
+                    collided_objects.append(obj)
+        elif dy < 0:  # If moving up
+            for obj in objects:
+                if pygame.sprite.collide_rect(player, obj):
+                    player.rect.top = obj.rect.bottom  # Adjust player's position
+                    player.hit_head()  # Reverse vertical velocity
+                    collided_objects.append(obj)
 
         return collided_objects
+
 
     @staticmethod
     def collide(player, objects, dx):
@@ -81,10 +91,36 @@ class Utility:
         keys = pygame.key.get_pressed()
 
         player.x_vel = 0
+
+        # Horizontal movement
+        if keys[pygame.K_a]:
+            player.move_left(PLAYER_VEL)
+        if keys[pygame.K_d]:
+            player.move_right(PLAYER_VEL)
+
+        # Check for collisions horizontally
         collide_left = Utility.collide(player, objects, -PLAYER_VEL * 2)
         collide_right = Utility.collide(player, objects, PLAYER_VEL * 2)
 
-        if keys[pygame.K_a] and not collide_left:
-            player.move_left(PLAYER_VEL)
-        if keys[pygame.K_d] and not collide_right:
-            player.move_right(PLAYER_VEL)
+        # Apply gravity only if player is in the air
+        if not player.is_landed(objects):
+            player.apply_gravity()
+
+        # Vertical movement (jumping)
+        if keys[pygame.K_SPACE] and player.is_landed(objects):
+            player.jump()
+
+        # Apply vertical movement
+        player.move(0, player.y_vel)
+
+        # Check for collisions vertically
+        collided_objects_y = Utility.handle_vertical_collision(player, objects, player.y_vel)
+
+        # Update player position after movement
+        player.update()
+
+        # If collided vertically, reset vertical velocity
+        if collided_objects_y:
+            player.y_vel = 0
+
+
