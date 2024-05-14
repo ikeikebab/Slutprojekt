@@ -18,8 +18,8 @@ class LevelManager:
     def create_level(self, level_name):
         level_definition = self.levels.get(level_name)
         if level_definition:
-            blocks, fire_positions = self.parse_level_definition(level_definition)
-            return blocks, fire_positions
+            blocks = self.parse_level_definition(level_definition)
+            return blocks
         else:
             print(f"Level '{level_name}' not found.")
             return None, None
@@ -27,7 +27,6 @@ class LevelManager:
     def parse_level_definition(self, level_definition):
         block_size = 96
         blocks = []
-        fire_positions = []
 
         for row_index, row in enumerate(level_definition):
             for col_index, symbol in enumerate(row):
@@ -36,10 +35,9 @@ class LevelManager:
                 if symbol == "#":
                     block = Block(x, y, block_size)
                     blocks.append(block)
-                elif symbol == "F":
-                    fire_positions.append((x, y))
 
-        return blocks, fire_positions
+
+        return blocks 
 
 # Instantiate LevelManager
 level_manager = LevelManager()
@@ -47,4 +45,4 @@ level_manager.add_level("level_1", level_manager.import_level_definitions("level
 level_manager.add_level("level_2", level_manager.import_level_definitions("level2.json"))
 
 
-blocks, fire_positions = level_manager.create_level("level_1")
+blocks = level_manager.create_level("level_1")

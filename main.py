@@ -3,9 +3,8 @@ import os
 from os.path import join
 from sprites import Player, Obstacle
 from utils import Utility
-from level import LevelManager, level_manager
+from level import level_manager
 from menu import UIManager
-from blocks import Fire, Block
 
 pygame.init()
 WIDTH, HEIGHT = 1280, 720
@@ -66,21 +65,14 @@ def main(window):
             current_screen = UIManager.main_menu(window, play_button_icon)
         elif current_screen == LEVEL_SELECTION_SCREEN:
             current_screen, level_definition = UIManager.level_selection(window)
-            blocks, fire_positions = level_manager.create_level("level_1")  # Provide level_name
+            blocks = level_manager.create_level("level_1")  # Provide level_name
             current_level = 1 if level_definition == level_manager.levels["level_1"] else 2
         elif current_screen == GAME_SCREEN:
             run = True
             while run:
                 clock.tick(FPS)
 
-                blocks, fire_positions = level_manager.create_level("level_1")  # Provide level_name
-
-                fires = []
-
-                for fire_position in fire_positions:
-                    fire = Fire(fire_position[0], fire_position[1] + 15, 16, 32)
-                    fire.on()
-                    fires.append(fire)
+                blocks = level_manager.create_level("level_1")  # Provide level_name
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -93,17 +85,7 @@ def main(window):
                 player.loop(FPS)
                 Utility.handle_move(player, blocks)
 
-                for fire in fires:
-                    fire.loop()
-
-                for fire in fires:
-                    if pygame.sprite.collide_mask(player, fire): # type: ignore
-                        player.make_hit()
-
                 draw(window, background, bg_image, player, blocks, offset_x)
-
-                for fire in fires:
-                    fire.draw(window, offset_x)
 
                 if ((player.rect.right - offset_x >= WIDTH - scroll_area_width) and player.x_vel > 0) or (
                         (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
