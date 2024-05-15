@@ -7,7 +7,7 @@ LEVEL_SELECTION_SCREEN = 1
 GAME_SCREEN = 2
 
 class UIManager:
-    level_manager = LevelManager()  # Instantiate LevelManager
+    level_manager = LevelManager()
 
     @staticmethod
     def draw_menu(window, play_button_icon):
@@ -17,7 +17,7 @@ class UIManager:
 
     @staticmethod
     def draw_level_selection(window):
-        UIManager.level_manager = LevelManager()  # Re-instantiate LevelManager to ensure fresh data
+        UIManager.level_manager = LevelManager() 
         UIManager.level_manager.add_level("level_1", UIManager.level_manager.import_level_definitions("level1.json"))
         UIManager.level_manager.add_level("level_2", UIManager.level_manager.import_level_definitions("level2.json"))
 
@@ -65,10 +65,10 @@ class UIManager:
                         mouse_pos = pygame.mouse.get_pos()
                         if (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 - 50) <= mouse_pos[1] <= (HEIGHT // 2 + 0):
-                            return GAME_SCREEN, "level_1"  # Pass level definition for level 1
+                            return GAME_SCREEN, "level_1" 
                         elif (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 + 50) <= mouse_pos[1] <= (HEIGHT // 2 + 100):
-                            return GAME_SCREEN, "level_2"  # Pass level definition for level 2
+                            return GAME_SCREEN, "level_2"  
 
 
             pygame.display.update()

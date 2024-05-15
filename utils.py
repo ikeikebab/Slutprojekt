@@ -13,6 +13,7 @@ class Utility:
 
     @staticmethod
     def load_sprite_sheets(dir1, dir2, width, height, direction=False):
+        # Funktion för att ladda in sprite sheets från angivna mappar
         path = os.path.join("assets", dir1, dir2)
         images = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
@@ -37,14 +38,8 @@ class Utility:
         return all_sprites
     
     @staticmethod
-    def get_background(name):
-        image = pygame.image.load(join("assets", "Background", name)).convert()
-        _, _, width, height = image.get_rect()
-    tiles = []
-    
-
-    @staticmethod
     def get_block(size):
+        # Funktion för att hämta blockbilden
         path = os.path.join("assets", "Terrain", "Terrain.png")
         image = pygame.image.load(path).convert()
         surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
@@ -54,19 +49,20 @@ class Utility:
 
     @staticmethod
     def handle_vertical_collision(player, objects, dy):
+        # Funktion för att hantera vertikella kollisioner mellan spelaren och objek
         collided_objects = []
 
-        if dy > 0:  # If moving down
+        if dy > 0:  # Om spelaren rör sig nedåt
             for obj in objects:
                 if pygame.sprite.collide_rect(player, obj):
-                    player.rect.bottom = obj.rect.top  # Adjust player's position
-                    player.landed()  # Reset jump count
+                    player.rect.bottom = obj.rect.top  # Justera spelarens position
+                    player.landed()  # Återställ hopp-räknaren
                     collided_objects.append(obj)
-        elif dy < 0:  # If moving up
+        elif dy < 0:  # Om spelaren rör sig uppåt
             for obj in objects:
                 if pygame.sprite.collide_rect(player, obj):
-                    player.rect.top = obj.rect.bottom  # Adjust player's position
-                    player.hit_head()  # Reverse vertical velocity
+                    player.rect.top = obj.rect.bottom  # Justera spelarens position
+                    player.hit_head()
                     collided_objects.append(obj)
 
         return collided_objects
@@ -74,6 +70,7 @@ class Utility:
 
     @staticmethod
     def collide(player, objects, dx):
+        # Funktion för att hantera kollisioner mellan spelaren och objekt
         player.move(dx, 0)
         player.update()
         collided_object = None
@@ -88,38 +85,31 @@ class Utility:
 
     @staticmethod
     def handle_move(player, objects):
+        # Funktion för att hantera spelarens rörelse
         keys = pygame.key.get_pressed()
 
         player.x_vel = 0
 
-        # Horizontal movement
         if keys[pygame.K_a]:
             player.move_left(PLAYER_VEL)
         if keys[pygame.K_d]:
             player.move_right(PLAYER_VEL)
 
-        # Check for collisions horizontally
-        collide_left = Utility.collide(player, objects, -PLAYER_VEL * 2)
-        collide_right = Utility.collide(player, objects, PLAYER_VEL * 2)
-
-        # Apply gravity only if player is in the air
+        # Applicera gravitation endast om spelaren är i luften
         if not player.is_landed(objects):
             player.apply_gravity()
 
-        # Vertical movement (jumping)
         if keys[pygame.K_SPACE] and player.is_landed(objects):
             player.jump()
 
-        # Apply vertical movement
         player.move(0, player.y_vel)
 
-        # Check for collisions vertically
+
         collided_objects_y = Utility.handle_vertical_collision(player, objects, player.y_vel)
 
-        # Update player position after movement
+        # Uppdatera spelarens position efter rörelse
         player.update()
 
-        # If collided vertically, reset vertical velocity
         if collided_objects_y:
             player.y_vel = 0
 

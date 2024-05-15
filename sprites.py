@@ -25,7 +25,6 @@ class Player(pygame.sprite.Sprite):
         self.max_fall_speed = 10
 
     def apply_gravity(self):
-        # Apply gravity only if not already at maximum falling speed
         if self.y_vel < self.max_fall_speed:
             self.y_vel += self.GRAVITY
 
@@ -70,12 +69,13 @@ class Player(pygame.sprite.Sprite):
         self.update_sprite()
 
     def landed(self):
+        # Funktion för att ange att spelaren har landat
         self.fall_count = 0
         self.y_vel = 0
         self.jump_count = 0
     
     def is_landed(self, objects):
-        # Check if player is landed on any objects
+        # Kolla om spelaren har landat på något objekt
         for obj in objects:
             if pygame.sprite.collide_rect(self, obj) and self.rect.bottom == obj.rect.top:
                 return True
@@ -86,6 +86,7 @@ class Player(pygame.sprite.Sprite):
         self.y_vel *= -1
 
     def update_sprite(self):
+        # Uppdatera spelarens sprite baserat på dess tillstånd och riktning
         sprite_sheet = "idle"
         if self.hit:
             sprite_sheet = "hit"
@@ -107,6 +108,7 @@ class Player(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
+        # Uppdatera rektangeln och masken baserat på den aktuella spriten
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
         self.mask = pygame.mask.from_surface(self.sprite)
 
