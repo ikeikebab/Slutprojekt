@@ -1,5 +1,5 @@
 import pygame
-from utils import Utility
+from utils import Utility # Importerar Utility-klassen från modulen utils
 
 WIDTH, HEIGHT = 1280, 720
 window = pygame.display.set_mode((WIDTH, HEIGHT))

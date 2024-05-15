@@ -7,6 +7,7 @@ LEVEL_SELECTION_SCREEN = 1
 GAME_SCREEN = 2
 
 class UIManager:
+    # Skapa en instans av LevelManager-klassen
     level_manager = LevelManager()
 
     @staticmethod
@@ -45,6 +46,7 @@ class UIManager:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed()[0]:
                         mouse_pos = pygame.mouse.get_pos()
+                        # Om användaren klickar på play-knappen, visa skärmen för level selection
                         if (WIDTH // 2 - 16) <= mouse_pos[0] <= (WIDTH // 2 + 16) and \
                                 (HEIGHT // 2 - 16) <= mouse_pos[1] <= (HEIGHT // 2 + 16):
                             UIManager.draw_level_selection(window)
@@ -63,9 +65,11 @@ class UIManager:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed()[0]:
                         mouse_pos = pygame.mouse.get_pos()
+                        # Om användaren klickar på Level 1-knappen, starta spelet på nivå 1
                         if (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 - 50) <= mouse_pos[1] <= (HEIGHT // 2 + 0):
                             return GAME_SCREEN, "level_1" 
+                        # Om användaren klickar på Level 2-knappen, starta spelet på nivå 2
                         elif (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 + 50) <= mouse_pos[1] <= (HEIGHT // 2 + 100):
                             return GAME_SCREEN, "level_2"  
@@ -102,6 +106,7 @@ class UIManager:
 
     @staticmethod
     def restart_level(player):
+        # Funktion för att återställa spelarens position och status vid omstart av nivån
         player.rect.x = 100
         player.rect.y = 100
         player.x_vel = 0
