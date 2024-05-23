@@ -1,0 +1,9 @@
+@startuml
+class LevelManager {
+    add_level()
+    import_level_definitions()
+    create_level()
+    parse_level_definition()
+        __init__()
+}
+@enduml

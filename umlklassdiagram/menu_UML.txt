@@ -1,0 +1,11 @@
+@startuml
+class UIManager {
+    draw_menu()
+    main_menu()
+    draw_level_selection()
+    level_selection()
+    game_over_screen()
+    restart_level()
+        __init__()
+}
+@enduml

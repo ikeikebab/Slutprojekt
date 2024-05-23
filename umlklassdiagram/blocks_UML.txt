@@ -1,0 +1,7 @@
+@startuml
+class Block {
+        mask
+    __init__()
+}
+Obstacle <|-- Block
+@enduml

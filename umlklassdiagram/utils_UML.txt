@@ -1,0 +1,11 @@
+@startuml
+class Utility {
+    flip()
+    load_sprite_sheets()
+    get_block()
+    handle_vertical_collision()
+    collide()
+    handle_move()
+        __init__()
+}
+@enduml
