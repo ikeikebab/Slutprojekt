@@ -13,6 +13,7 @@ START_SCREEN = 0
 LEVEL_SELECTION_SCREEN = 1
 GAME_SCREEN = 2
 
+
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 def get_background(name):
@@ -26,7 +27,6 @@ def get_background(name):
             tiles.append(pos)
 
     return tiles, image
-
 
 def draw(window, background, bg_image, player, objects, offset_x):
     for tile in background:
@@ -49,6 +49,8 @@ def main(window):
     scroll_area_width = 200
 
     play_button_icon = pygame.image.load("assets/Menu/Buttons/Play.png").convert_alpha()
+    exit_button_icon = pygame.image.load("assets/Menu/Buttons/Close.png").convert_alpha()
+    menu_bg, menu_bg_image = get_background("Blue.png")
 
     current_screen = START_SCREEN
     run_game = True  
@@ -62,7 +64,7 @@ def main(window):
                 run_game = False
 
         if current_screen == START_SCREEN:
-            current_screen = UIManager.main_menu(window, play_button_icon)
+            current_screen = UIManager.main_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image)
         elif current_screen == LEVEL_SELECTION_SCREEN:
             current_screen, selected_level = UIManager.level_selection(window)
             print(f"Selected level: {selected_level}")
@@ -107,7 +109,9 @@ def main(window):
                     run_game = False
 
     pygame.quit()
-    quit()
 
 if __name__ == "__main__":
     main(window)
+
+
+

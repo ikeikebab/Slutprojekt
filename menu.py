@@ -11,10 +11,66 @@ class UIManager:
     level_manager = LevelManager()
 
     @staticmethod
-    def draw_menu(window, play_button_icon):
-        window.fill((0, 0, 0))
-        window.blit(play_button_icon, (WIDTH // 2 - 16, HEIGHT // 2 - 16))
+    def draw_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image):
+    # Draw the background
+        for tile in menu_bg:
+            window.blit(menu_bg_image, tile)
+        
+        # Draw the title
+        font = pygame.font.Font(None, 72)
+        title_text = font.render("Frog Jumper", True, (255, 255, 255))
+        title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 4 - 50))
+        window.blit(title_text, title_rect)
+        
+        # Calculate the y-coordinate of the title text
+        title_bottom = title_rect.bottom
+        
+        # Calculate the y-coordinate for positioning the buttons below the title
+        button_y = title_bottom + 50  # Adjust this value as needed
+        
+        # Calculate the center of the screen
+        center_x = 500
+        
+        # Calculate the x-coordinate for positioning the buttons in the center
+        button_x = center_x
+        
+        # Draw the play button
+        play_button_rect = play_button_icon.get_rect(center=(button_x, button_y))
+        play_button_rect.size = (300, 150)
+        play_button_icon = pygame.transform.scale(play_button_icon, play_button_rect.size)
+        window.blit(play_button_icon, play_button_rect)
+
+        # Calculate the position of the exit button relative to the play button
+        exit_button_rect = exit_button_icon.get_rect(center=(button_x, play_button_rect.bottom + 50))
+        exit_button_rect.size = (300, 150)
+        exit_button_icon = pygame.transform.scale(exit_button_icon, exit_button_rect.size)
+        window.blit(exit_button_icon, exit_button_rect)
+
         pygame.display.update()
+
+        return play_button_rect, exit_button_rect
+
+    @staticmethod
+    def main_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image):
+        play_button_rect, exit_button_rect = UIManager.draw_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image)
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if pygame.mouse.get_pressed()[0]:
+                        mouse_pos = pygame.mouse.get_pos()
+                        # If the user clicks the play button, show the level selection screen
+                        if play_button_rect.collidepoint(mouse_pos):
+                            UIManager.draw_level_selection(window)
+                            return LEVEL_SELECTION_SCREEN
+                        # If the user clicks the exit button, quit the game
+                        elif exit_button_rect.collidepoint(mouse_pos):
+                            pygame.quit()
+                            quit()
+
+            pygame.display.update()
 
     @staticmethod
     def draw_level_selection(window):
@@ -36,26 +92,6 @@ class UIManager:
         pygame.display.update()
 
     @staticmethod
-    def main_menu(window, play_button_icon):
-        UIManager.draw_menu(window, play_button_icon)
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if pygame.mouse.get_pressed()[0]:
-                        mouse_pos = pygame.mouse.get_pos()
-                        # Om användaren klickar på play-knappen, visa skärmen för level selection
-                        if (WIDTH // 2 - 16) <= mouse_pos[0] <= (WIDTH // 2 + 16) and \
-                                (HEIGHT // 2 - 16) <= mouse_pos[1] <= (HEIGHT // 2 + 16):
-                            UIManager.draw_level_selection(window)
-                            return LEVEL_SELECTION_SCREEN
-
-            pygame.display.update()
-
-
-    @staticmethod
     def level_selection(window):
         while True:
             for event in pygame.event.get():
@@ -65,11 +101,11 @@ class UIManager:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed()[0]:
                         mouse_pos = pygame.mouse.get_pos()
-                        # Om användaren klickar på Level 1-knappen, starta spelet på nivå 1
+                        # If the user clicks the Level 1 button, start the game on level 1
                         if (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 - 50) <= mouse_pos[1] <= (HEIGHT // 2 + 0):
                             return GAME_SCREEN, "level_1" 
-                        # Om användaren klickar på Level 2-knappen, starta spelet på nivå 2
+                        # If the user clicks the Level 2 button, start the game on level 2
                         elif (WIDTH // 2 - 100) <= mouse_pos[0] <= (WIDTH // 2 + 100) and \
                                 (HEIGHT // 2 + 50) <= mouse_pos[1] <= (HEIGHT // 2 + 100):
                             return GAME_SCREEN, "level_2"  
