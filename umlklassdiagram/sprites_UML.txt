@@ -1,0 +1,53 @@
+@startuml
+class Player {
+    apply_gravity()
+    jump()
+    move()
+    make_hit()
+    move_left()
+    move_right()
+    loop()
+    landed()
+    is_landed()
+    hit_head()
+    update_sprite()
+    update()
+    draw()
+        rect
+    x_vel
+    y_vel
+    mask
+    animation_count
+    fall_count
+    jump_count
+    hit
+    hit_count
+    max_fall_speed
+    animation_count
+    fall_count
+    hit
+    animation_count
+    x_vel
+    animation_count
+    hit
+    hit_count
+    fall_count
+    y_vel
+    jump_count
+    count
+    sprite
+    rect
+    mask
+    __init__()
+}
+class Obstacle {
+    draw()
+        rect
+    image
+    width
+    height
+    name
+    is_fire
+    __init__()
+}
+@enduml
