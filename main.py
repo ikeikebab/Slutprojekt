@@ -122,33 +122,49 @@ def main(window):
 
                 if game_state == "game_over":
                     restart = UIManager.game_over_screen(window)
+
                 if restart:
-                    UIManager.restart_level(player)
+                    if spawn_point:
+                        player.rect.x, player.rect.y = spawn_point
+                        start_time = None 
+                    else:
+                        player.rect.x, player.rect.y = 100, 100  # Default position if no spawn point
+                        start_time = None 
+
                     game_state = "playing"
-                    restart = False 
+                    restart = False
                 else:
                     run_game = False
 
                 if goal_point and player.rect.colliderect(pygame.Rect(goal_point[0], goal_point[1], block_size, block_size)):
                     end_time = time.time()
-                    elapsed_time = end_time - start_time
+                    if start_time is not None and end_time is not None:
+                     elapsed_time = end_time - start_time
                     print(f"Level completed in {elapsed_time:.2f} seconds")
                     goal_screen_choice = UIManager.goal_screen(window, elapsed_time)
-                    if goal_screen_choice == "restart":
-                        restart = True
-                    elif goal_screen_choice == "next_level":
-                        current_screen = LEVEL_SELECTION_SCREEN
-                        selected_level = "level_2"  
-                    
-                    blocks, spawn_point, checkpoints, goal_point = level_manager.create_level(selected_level)
-                    if spawn_point:
-                        player.rect.x, player.rect.y = spawn_point
-                    else:
-                        player.rect.x, player.rect.y = 100, 100  
-                    
-                    start_time = None  
 
-     
+                    if goal_screen_choice == "restart":
+                        current_screen = GAME_SCREEN  # Set current_screen back to GAME_SCREEN
+                        if spawn_point:
+                            player.rect.x, player.rect.y = spawn_point
+                        else:
+                            player.rect.x, player.rect.y = 100, 100  # Default position if no spawn point
+                        start_time = None  # Reset start time
+                        draw(window, background, bg_image, player, blocks, offset_x)  # Redraw the game screen
+                        continue 
+
+                    elif goal_screen_choice == "next_level":
+                        current_screen = GAME_SCREEN 
+                        selected_level = "level_2"  
+
+                        blocks, spawn_point, checkpoints, goal_point = level_manager.create_level(selected_level)
+                        if spawn_point:
+                            player.rect.x, player.rect.y = spawn_point
+                        else:
+                            player.rect.x, player.rect.y = 100, 100  
+
+                    start_time = None 
+
                     continue 
 
 
