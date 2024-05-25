@@ -14,6 +14,7 @@ GAME_SCREEN = 2
 
 import time 
 
+# testing
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
