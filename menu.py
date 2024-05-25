@@ -10,6 +10,10 @@ class UIManager:
     # Skapa en instans av LevelManager-klassen
     level_manager = LevelManager()
 
+    START_SCREEN = 0
+    LEVEL_SELECTION_SCREEN = 1
+    GAME_SCREEN = 2
+
     @staticmethod
     def draw_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image):
 
@@ -140,18 +144,6 @@ class UIManager:
                             return True
             pygame.display.update()
 
-    @staticmethod
-    def restart_level(player):
-        # Funktion för att återställa spelarens position och status vid omstart av nivån
-        player.rect.x = 100
-        player.rect.y = 100
-        player.x_vel = 0
-        player.y_vel = 0
-        player.hit = False
-        player.hit_count = 0
-        player.animation_count = 0
-        player.jump_count = 0
-        player.fall_count = 0
 
     @staticmethod
     def goal_screen(window, elapsed_time):

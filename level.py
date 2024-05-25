@@ -18,10 +18,13 @@ class LevelManager:
         level_definition = self.levels.get(level_name)
         if level_definition:
             blocks, spawn_point, checkpoints, goal_point = self.parse_level_definition(level_definition)
-            return blocks, spawn_point, checkpoints, goal_point,
+            if spawn_point is not None:  # Kontrollera att spawn_point är giltig
+                return blocks, spawn_point, checkpoints, goal_point
+            else:
+                print("Spawn point is missing in level definition.")
         else:
             print(f"Level '{level_name}' not found.")
-            return None, None, None, None
+        return None, None, None, None
 
     def parse_level_definition(self, level_definition):
         block_size = 96
@@ -50,6 +53,8 @@ class LevelManager:
                     blocks.append(block)
                     goal_point = (x, y)
 
+        if spawn_point is None:
+            print("Spawn point is missing in level definition.")
 
         return blocks, spawn_point, checkpoints, goal_point
 
