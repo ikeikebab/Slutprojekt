@@ -124,5 +124,5 @@ class Player(GameObject):
 class Blocks(GameObject):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height, (255, 0, 0))
-        self.image.fill((0, 0, 0, 0))  # Clear the existing image
+        self.image.fill((0, 0, 0, 0)) 
         self.mask = pygame.mask.from_surface(self.image)

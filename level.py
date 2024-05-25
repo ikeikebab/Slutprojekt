@@ -1,3 +1,4 @@
+
 from blocks import Block, SpawnBlock, CheckpointBlock, GoalBlock 
 
 class LevelManager:
@@ -18,7 +19,7 @@ class LevelManager:
         level_definition = self.levels.get(level_name)
         if level_definition:
             blocks, spawn_point, checkpoints, goal_point = self.parse_level_definition(level_definition)
-            return blocks, spawn_point, checkpoints, goal_point
+            return blocks, spawn_point, checkpoints, goal_point,
         else:
             print(f"Level '{level_name}' not found.")
             return None, None, None, None
@@ -49,6 +50,7 @@ class LevelManager:
                     block = GoalBlock(x, y, block_size)
                     blocks.append(block)
                     goal_point = (x, y)
+
 
         return blocks, spawn_point, checkpoints, goal_point
 
