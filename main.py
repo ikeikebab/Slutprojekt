@@ -144,12 +144,12 @@ def main(window):
                     if spawn_point:
                         player.rect.x, player.rect.y = spawn_point
                     else:
-                        player.rect.x, player.rect.y = 100, 100  # Default position if no spawn point
+                        player.rect.x, player.rect.y = 100, 100  
                     
-                    start_time = None  # Reset start time for the next level
+                    start_time = None  
 
-                    # Continue the game loop
-                    continue  # Skip the rest of the loop and start next level
+     
+                    continue 
 
 
     pygame.quit()
