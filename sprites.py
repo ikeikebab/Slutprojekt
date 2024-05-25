@@ -11,10 +11,8 @@ class GameObject(pygame.sprite.Sprite):
     def draw(self, window, offset_x):
         window.blit(self.image, (self.rect.x - offset_x, self.rect.y))
 
-class Player(GameObject):
-    COLOR = (255, 0, 0)
+class Character:
     GRAVITY = 1
-    SPRITES = Utility.load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
     ANIMATION_DELAY = 3
 
     def __init__(self, x, y, width, height):
@@ -33,7 +31,6 @@ class Player(GameObject):
     def apply_gravity(self):
         if self.y_vel < self.max_fall_speed:
             self.y_vel += self.GRAVITY
-
 
     def jump(self):
         self.y_vel = -self.GRAVITY * 12
@@ -75,24 +72,17 @@ class Player(GameObject):
         self.update_sprite()
 
     def landed(self):
-        # Funktion för att ange att spelaren har landat
         self.fall_count = 0
         self.y_vel = 0
         self.jump_count = 0
-    
+
     def is_landed(self, objects):
-        # Kolla om spelaren har landat på något objekt
         for obj in objects:
             if pygame.sprite.collide_rect(self, obj) and self.rect.bottom == obj.rect.top:
                 return True
         return False
 
-    def hit_head(self):
-        self.count = 0
-        self.y_vel *= -1
-
     def update_sprite(self):
-        # Uppdatera spelarens sprite baserat på dess tillstånd och riktning
         sprite_sheet = "idle"
         if self.hit:
             sprite_sheet = "hit"
@@ -107,19 +97,28 @@ class Player(GameObject):
             sprite_sheet = "run"
 
         sprite_sheet_name = sprite_sheet + "_" + self.direction
-        sprites = self.SPRITES[sprite_sheet_name]
+        sprites = self.SPRITES[sprite_sheet_name] # type: ignore
         sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
         self.sprite = sprites[sprite_index]
         self.animation_count += 1
         self.update()
 
     def update(self):
-        # Uppdatera rektangeln och masken baserat på den aktuella spriten
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
         self.mask = pygame.mask.from_surface(self.sprite)
 
+
+class Player(Character):
+    COLOR = (255, 0, 0)
+    SPRITES = Utility.load_sprite_sheets("MainCharacters", "NinjaFrog", 32, 32, True)
+
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
+        self.direction = "left" 
+
     def draw(self, win, offset_x):
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
+
 
 class Blocks(GameObject):
     def __init__(self, x, y, width, height):

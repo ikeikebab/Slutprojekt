@@ -1,4 +1,3 @@
-
 from blocks import Block, SpawnBlock, CheckpointBlock, GoalBlock 
 
 class LevelManager:
