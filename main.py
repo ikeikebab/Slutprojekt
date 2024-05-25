@@ -46,7 +46,7 @@ def main(window):
     background, bg_image = get_background("Gray.png")
     block_size = 96
 
-    player = Player(100, 100, 50, 50)  # Instantiate the player
+    player = Player(100, 100, 50, 50)  
 
     offset_x = 0
     scroll_area_width = 200
