@@ -128,7 +128,7 @@ def main(window):
                         player.rect.x, player.rect.y = spawn_point
                         start_time = None 
                     else:
-                        player.rect.x, player.rect.y = 100, 100  # Default position if no spawn point
+                        player.rect.x, player.rect.y = 100, 100  
                         start_time = None 
 
                     game_state = "playing"
@@ -144,13 +144,13 @@ def main(window):
                     goal_screen_choice = UIManager.goal_screen(window, elapsed_time)
 
                     if goal_screen_choice == "restart":
-                        current_screen = GAME_SCREEN  # Set current_screen back to GAME_SCREEN
+                        current_screen = GAME_SCREEN  
                         if spawn_point:
                             player.rect.x, player.rect.y = spawn_point
                         else:
-                            player.rect.x, player.rect.y = 100, 100  # Default position if no spawn point
-                        start_time = None  # Reset start time
-                        draw(window, background, bg_image, player, blocks, offset_x)  # Redraw the game screen
+                            player.rect.x, player.rect.y = 100, 100 
+                        start_time = None 
+                        draw(window, background, bg_image, player, blocks, offset_x)  
                         continue 
 
                     elif goal_screen_choice == "next_level":
