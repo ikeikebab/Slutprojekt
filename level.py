@@ -3,7 +3,7 @@ from blocks import Block, SpawnBlock, CheckpointBlock, GoalBlock
 class Level:
     def __init__(self, level_definition):
         self.level_definition = level_definition
-        self.block_size = 96
+        self.block_size = 96 # Storleken på varje block i nivån
         self.blocks = []
         self.spawn_point = None
         self.checkpoints = []
@@ -39,7 +39,7 @@ class Level:
 
 class LevelManager:
     def __init__(self):
-        self.levels = {}
+        self.levels = {} # En tom dictionary för att lagra nivådefinitioner
 
     def add_level(self, level_name, level_definition):
         self.levels[level_name] = Level(level_definition)
@@ -52,7 +52,7 @@ class LevelManager:
             return level_definition
 
     def create_level(self, level_name):
-        level = self.levels.get(level_name)
+        level = self.levels.get(level_name) # Hämtar nivådefinitionen från vår dictionary
         if level:
             blocks, spawn_point, checkpoints, goal_point = level.get_level_data()
             if spawn_point is not None:
@@ -63,7 +63,10 @@ class LevelManager:
             print(f"Level '{level_name}' not found.")
         return None, None, None, None
 
+
+# Skapar en instans av LevelManager
 level_manager = LevelManager()
+# Lägger till nivådefinitioner för "level_1" och "level_2"
 level_manager.add_level("level_1", level_manager.import_level_definitions("level1.json"))
 level_manager.add_level("level_2", level_manager.import_level_definitions("level2.json"))
 
