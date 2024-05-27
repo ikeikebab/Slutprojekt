@@ -11,6 +11,12 @@ class GameObject(pygame.sprite.Sprite):
     def draw(self, window, offset_x):
         window.blit(self.image, (self.rect.x - offset_x, self.rect.y))
 
+class Blocks(GameObject):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height, (255, 0, 0))
+        self.image.fill((0, 0, 0, 0)) 
+        self.mask = pygame.mask.from_surface(self.image)
+
 class Character:
     GRAVITY = 1
     ANIMATION_DELAY = 3
@@ -119,9 +125,3 @@ class Player(Character):
     def draw(self, win, offset_x):
         win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
 
-
-class Blocks(GameObject):
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height, (255, 0, 0))
-        self.image.fill((0, 0, 0, 0)) 
-        self.mask = pygame.mask.from_surface(self.image)
