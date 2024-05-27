@@ -10,23 +10,24 @@ class UIManager:
     # Skapa en instans av LevelManager-klassen
     level_manager = LevelManager()
 
+    # Definiera konstanter för skärmtyper
     START_SCREEN = 0
     LEVEL_SELECTION_SCREEN = 1
     GAME_SCREEN = 2
 
     @staticmethod
     def draw_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image):
-
+        # Rita huvudmenyn
         for tile in menu_bg:
             window.blit(menu_bg_image, tile)
         
-
+        # Rita titeltext
         font = pygame.font.Font(None, 72)
         title_text = font.render("Frog Jumper", True, (255, 255, 255))
         title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 4 - 50))
         window.blit(title_text, title_rect)
         
-
+        # Position för knappar
         title_bottom = title_rect.bottom
         
 
@@ -35,16 +36,15 @@ class UIManager:
 
         center_x = 500
         
-
         button_x = center_x
         
-
+        # Rita spelknappen
         play_button_rect = play_button_icon.get_rect(center=(button_x, button_y))
         play_button_rect.size = (300, 150)
         play_button_icon = pygame.transform.scale(play_button_icon, play_button_rect.size)
         window.blit(play_button_icon, play_button_rect)
 
-
+        # Rita avslutningsknappen
         exit_button_rect = exit_button_icon.get_rect(center=(button_x, play_button_rect.bottom + 50))
         exit_button_rect.size = (300, 150)
         exit_button_icon = pygame.transform.scale(exit_button_icon, exit_button_rect.size)
@@ -56,6 +56,7 @@ class UIManager:
 
     @staticmethod
     def main_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image):
+        # Visa huvudmenyn
         play_button_rect, exit_button_rect = UIManager.draw_menu(window, play_button_icon, exit_button_icon, menu_bg, menu_bg_image)
         while True:
             for event in pygame.event.get():
@@ -66,6 +67,7 @@ class UIManager:
                     if pygame.mouse.get_pressed()[0]:
                         mouse_pos = pygame.mouse.get_pos()
 
+                        # Hantera knapptryckningar
                         if play_button_rect.collidepoint(mouse_pos):
                             UIManager.draw_level_selection(window)
                             return LEVEL_SELECTION_SCREEN
@@ -78,10 +80,12 @@ class UIManager:
 
     @staticmethod
     def draw_level_selection(window):
+        # Rita nivåvalsskärmen
         UIManager.level_manager = LevelManager() 
         UIManager.level_manager.add_level("level_1", UIManager.level_manager.import_level_definitions("level1.json"))
         UIManager.level_manager.add_level("level_2", UIManager.level_manager.import_level_definitions("level2.json"))
 
+        # Rita knappar för nivåval
         level1_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
         pygame.draw.rect(window, (255, 255, 255), level1_button_rect)
         font = pygame.font.Font(None, 36)
@@ -97,6 +101,7 @@ class UIManager:
 
     @staticmethod
     def level_selection(window):
+        # Hantera val av nivå
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -119,6 +124,7 @@ class UIManager:
 
     @staticmethod
     def game_over_screen(window):
+        # Visa Game Over-skärmen
         font = pygame.font.Font(None, 36)
         game_over_text = font.render("Game Over", True, (255, 0, 0))
         restart_text = font.render("Restart", True, (255, 255, 255))
@@ -147,6 +153,7 @@ class UIManager:
 
     @staticmethod
     def goal_screen(window, elapsed_time):
+        # Visa målskärmen
         font = pygame.font.Font(None, 36)
         finish_time_text = font.render(f"Finish Time: {elapsed_time:.2f} seconds", True, (255, 255, 255))
         restart_text = font.render("Restart", True, (255, 255, 255))
