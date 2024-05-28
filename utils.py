@@ -41,46 +41,6 @@ class Utility:
         return all_sprites  # Returnera dictionary med alla sprites
 
     @staticmethod
-    def get_block(size):
-        # Skapa en block-yta med angiven storlek
-        path = join("assets", "Terrain", "Terrain.png")  # Sökväg till block-bild
-        image = pygame.image.load(path).convert_alpha()  # Ladda in block-bilden
-        surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)  # Skapa en yta för blocket
-        rect = pygame.Rect(96, 0, size, size)  # Rektangel för att klippa ut blocket från bilden
-        surface.blit(image, (0, 0), rect)  # Klipp ut och klistra in blocket på ytan
-        return pygame.transform.scale2x(surface)  # Skalning av blocket
-
-    @staticmethod
-    def get_spawn_block(size):
-        # Skapa en startpunkt-yta med angiven storlek
-        path = join("assets", "Terrain", "Spawn.png")  # Sökväg till startpunkt-bild
-        image = pygame.image.load(path).convert_alpha()  # Ladda in startpunkt-bilden
-        surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)  # Skapa en yta för startpunkten
-        rect = pygame.Rect(0, 0, size, size)  # Rektangel för att klippa ut startpunkten från bilden
-        surface.blit(image, (0, 0), rect)  # Klipp ut och klistra in startpunkten på ytan
-        return pygame.transform.scale2x(surface)  # Skalning av startpunkten
-
-    @staticmethod
-    def get_checkpoint_block(size):
-        # Skapa en kontrollpunkt-yta med angiven storlek
-        path = join("assets", "Terrain", "Checkpoint.png")  # Sökväg till kontrollpunkt-bild
-        image = pygame.image.load(path).convert_alpha()  # Ladda in kontrollpunkt-bilden
-        surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)  # Skapa en yta för kontrollpunkten
-        rect = pygame.Rect(32, 0, size, size)  # Rektangel för att klippa ut kontrollpunkten från bilden
-        surface.blit(image, (0, 0), rect)  # Klipp ut och klistra in kontrollpunkten på ytan
-        return pygame.transform.scale2x(surface)  # Skalning av kontrollpunkten
-
-    @staticmethod
-    def get_goal_block(size):
-        # Skapa en målpunkt-yta med angiven storlek
-        path = join("assets", "Terrain", "Goal.png")  # Sökväg till målpunkt-bild
-        image = pygame.image.load(path).convert_alpha()  # Ladda in målpunkt-bilden
-        surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)  # Skapa en yta för målpunkten
-        rect = pygame.Rect(64, 0, size, size)  # Rektangel för att klippa ut målpunkten från bilden
-        surface.blit(image, (0, 0), rect)  # Klipp ut och klistra in målpunkten på ytan
-        return pygame.transform.scale2x(surface)  # Skalning av målpunkten
-
-    @staticmethod
     def collide(player, objects, dy):
         # Kollisionshantering mellan spelaren och objekt
         collided_objects = []  # Lista för kolliderande objekt

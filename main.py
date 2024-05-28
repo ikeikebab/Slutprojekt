@@ -1,6 +1,6 @@
 import pygame
 from os.path import join
-from sprites import GameObject, Player
+from sprites import Player
 from utils import Utility
 from level import level_manager
 from menu import UIManager

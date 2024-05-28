@@ -1,27 +1,6 @@
 import pygame
 from utils import Utility
 
-class GameObject(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, color):
-        super().__init__()
-        # Skapa en yta för objektet med önskad färg och storlek
-        self.image = pygame.Surface((width, height))
-        self.image.fill(color)
-        # Skapa en rektangel för objektets position och storlek
-        self.rect = self.image.get_rect(topleft=(x, y))
-
-    def draw(self, window, offset_x):
-        # Rita objektet på skärmen med given förskjutning
-        window.blit(self.image, (self.rect.x - offset_x, self.rect.y))
-
-class Blocks(GameObject):
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height, (255, 0, 0))
-        # Fyll ytan med transparent färg för att göra blocket osynligt
-        self.image.fill((0, 0, 0, 0)) 
-        # Skapa en mask för kollision med blocket
-        self.mask = pygame.mask.from_surface(self.image)
-
 class Character:
     GRAVITY = 1
     ANIMATION_DELAY = 3
